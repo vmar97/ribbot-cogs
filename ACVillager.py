@@ -11,19 +11,26 @@ class Villager(commands.Cog):
 
         @commands.command(pass_context=True)
         async def villager(self, ctx, villager):
+                if villager == "Renee" or villager == "renee":
+                        villager = 'Renée'
+                elif villager == "Etoile" or villager == "etoile":
+                        villager = 'Étoile'
                 apikey = 'INSERT_API_HERE'
-                apilink = requests.get('https://api.nookipedia.com/villagers?name=' + villager + '&api_key=' + apikey)
+                apilink = requests.get('https://api.nookipedia.com/villagers?name=' + villager + '&nhdetails=true&api_key=' + apikey)
                 nookapi = apilink.json()
-                villagercol = '0x' + str(nookapi[0]['title_color'])
-                data = discord.Embed(title=villager, url=nookapi[0]["url"], color=int(villagercol), description=nookapi[0]["quote"])
+                villagercol = int(nookapi[0]['title_color'], 16)
+                data = discord.Embed(title=villager, url=nookapi[0]["url"], colour=villagercol, description=nookapi[0]["quote"])
                 if nookapi == "[]":
                         data.add_field(name="Error", value="Villager does not exist!")
                 else:
-                        data.set_thumbnail(url=image_url)
+                        data.set_image(url=nookapi[0]["image_url"])
+                        if bool(nookapi[0]["nh_details"]["photo_url"]) == True:
+                         data.set_thumbnail(url=nookapi[0]["nh_details"]["photo_url"])
+
                         data.add_field(name="Species", value=nookapi[0]["species"], inline=True)
                         data.add_field(name="Personality", value=nookapi[0]["personality"], inline=True)
                         data.add_field(name="Gender", value=nookapi[0]["gender"], inline=True)
                         data.add_field(name="Birthday", value=nookapi[0]["birthday_month"] + ' ' + str(nookapi[0]["birthday_day"]), inline=True)
                         data.add_field(name="Sign", value=nookapi[0]["sign"], inline=True)
                         data.add_field(name="Catchphrase", value=nookapi[0]["phrase"], inline=True)
-                        data.add_field(name="More info", value='Learn more on Nookipedia', url=nookapi[0]["url"], inline=True)
+                await ctx.send(embed=data)
