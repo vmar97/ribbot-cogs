@@ -15,8 +15,8 @@ class villagerLookup:
         async def villager(self, ctx, villager):
                 apilink = requests.get('https://api.nookipedia.com/villagers?name=' + villager + '&api_key=' + api-key)
                 api-key = 'INSERT_API_HERE'
-                data = discord.Embed(title=villager, url=nookapi["url"], color=nookapi["title_color"], description=nookapi["quote"])
                 nookapi = json.loads(apilink.text)
+                data = discord.Embed(title=villager, url=nookapi["url"], color=nookapi["title_color"], description=nookapi["quote"])
                 if nookapi == "[]":
                         data.add_field(name="Error", value="Villager does not exist!")
                 else:
