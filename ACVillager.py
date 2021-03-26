@@ -33,4 +33,5 @@ class Villager(commands.Cog):
                         data.add_field(name="Birthday", value=nookapi[0]["birthday_month"] + ' ' + str(nookapi[0]["birthday_day"]), inline=True)
                         data.add_field(name="Sign", value=nookapi[0]["sign"], inline=True)
                         data.add_field(name="Catchphrase", value=nookapi[0]["phrase"], inline=True)
+                        data.set_footer(text='Powered by Nookipedia', icon_url='https://nookipedia.com/favicon.ico')
                 await ctx.send(embed=data)
