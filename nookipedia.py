@@ -40,7 +40,16 @@ class Nookipedia(commands.Cog):
                             photo = nookapi["nh_details"]["photo_url"]
                             variation = nookapi["nh_details"]["clothing_variation"]
                 else:
-                        apilink = requests.get('https://api.nookipedia.com/villagers?name=' + villager + '&nhdetails=true&api_key=' + apikey)
+                        if villager.lower() == 'carmen mouse':
+                            apilink = requests.get('https://api.nookipedia.com/villagers?name=Carmen&species=Mouse&nhdetails=true&api_key=' + apikey)
+                        elif villager.lower() == 'lulu':
+                            apilink = requests.get('https://api.nookipedia.com/villagers?name=Lulu&species=Hippo&nhdetails=true&api_key=' + apikey)
+                        elif villager.lower() == 'lulu islander':
+                            apilink = requests.get('https://api.nookipedia.com/villagers?name=Lulu&species=Anteater&nhdetails=true&api_key=' + apikey)
+                        elif villager.lower() == 'petunia rhino' or villager.lower() == 'petunia rhinoceros':
+                            apilink = requests.get('https://api.nookipedia.com/villagers?name=Petunia&species=Rhinoceros&nhdetails=true&api_key=' + apikey)
+                        else:
+                            apilink = requests.get('https://api.nookipedia.com/villagers?name=' + villager + '&nhdetails=true&api_key=' + apikey)
                         nookapi = apilink.json()
                         name = nookapi[0]["name"]
                         url = nookapi[0]["url"]
@@ -93,7 +102,20 @@ class Nookipedia(commands.Cog):
                         else:
                                 data.add_field(name="Clothing", value=clothing, inline=True)
                         data.add_field(name="More Info", value="[Learn more on Nookipedia](" + url + ")", inline=True)
-                        data.set_footer(text='Powered by Nookipedia', icon_url='https://nookipedia.com/favicon.ico')
+                        if villager.lower() == 'carmen':
+                            data.set_footer(text="Powered by Nookipedia -- For the mouse villager, type !villager Carmen Mouse", icon_url='https://nookipedia.com/favicon.ico')
+                        elif villager.lower() == 'carmen mouse':
+                            data.set_footer(text="Powered by Nookipedia -- For the rabbit villager, type !villager Carmen", icon_url='https://nookipedia.com/favicon.ico')
+                        elif villager.lower() == 'lulu':
+                            data.set_footer(text="Powered by Nookipedia -- For the anteater villager, type !villager Lulu Islander", icon_url='https://nookipedia.com/favicon.ico')
+                        elif villager.lower() == 'lulu islander':
+                            data.set_footer(text="Powered by Nookipedia -- For the hippo villager, type !villager Lulu", icon_url='https://nookipedia.com/favicon.ico')
+                        elif villager.lower() == 'petunia':
+                            data.set_footer(text="Powered by Nookipedia -- For the rhinocros villager, type !villager Petunia rhinoceros", icon_url='https://nookipedia.com/favicon.ico')
+                        elif villager.lower() == 'petunia rhino' or villager.lower() == 'petunia rhinoceros':
+                            data.set_footer(text="Powered by Nookipedia -- For the cow villager, type !villager Petunia", icon_url='https://nookipedia.com/favicon.ico')
+                        else:
+                            data.set_footer(text='Powered by Nookipedia', icon_url='https://nookipedia.com/favicon.ico')
                 await ctx.send(embed=data)
 
         @commands.command(pass_context=True)
@@ -103,7 +125,7 @@ class Nookipedia(commands.Cog):
                 apikey = 'INSERT_API_HERE'
                 apilink = requests.get('https://api.nookipedia.com/nh/fish/' + fish + '?api_key=' + apikey)
                 nookapi = apilink.json()
-                coloring = int('67ac42', 16)
+                coloring = int('66ccff', 16)
                 data = discord.Embed(title="Fish info", colour=coloring, description=nookapi["catchphrases"][0])
                 data.set_thumbnail(url=nookapi["image_url"])
                 data.set_author(name=nookapi["name"], url=nookapi["url"])
@@ -123,7 +145,7 @@ class Nookipedia(commands.Cog):
                 apikey = 'INSERT_API_HERE'
                 apilink = requests.get('https://api.nookipedia.com/nh/bugs/' + bug + '?api_key=' + apikey)
                 nookapi = apilink.json()
-                coloring = int('67ac42', 16)
+                coloring = int('caed78', 16)
                 data = discord.Embed(title="Bug info", colour=coloring, description=nookapi["catchphrases"][0])
                 data.set_thumbnail(url=nookapi["image_url"])
                 data.set_author(name=nookapi["name"], url=nookapi["url"])
@@ -143,7 +165,7 @@ class Nookipedia(commands.Cog):
                 apikey = 'INSERT_API_HERE'
                 apilink = requests.get('https://api.nookipedia.com/nh/sea/' + seacrit + '?api_key=' + apikey)
                 nookapi = apilink.json()
-                coloring = int('67ac42', 16)
+                coloring = int('66a6ff', 16)
                 data = discord.Embed(title="Sea creature info", colour=coloring, description=nookapi["catchphrases"][0])
                 data.set_thumbnail(url=nookapi["image_url"])
                 data.set_author(name=nookapi["name"], url=nookapi["url"])
@@ -162,7 +184,7 @@ class Nookipedia(commands.Cog):
                 apikey = 'INSERT_API_HERE'
                 apilink = requests.get('https://api.nookipedia.com/nh/art/' + art + '?api_key=' + apikey)
                 nookapi = apilink.json()
-                coloring = int('67ac42', 16)
+                coloring = int('e1a884', 16)
                 data = discord.Embed(title="Art info", colour=coloring, description=nookapi["description"])
                 data.set_thumbnail(url=nookapi["image_url"])
                 data.set_author(name=nookapi["name"], url=nookapi["url"])
