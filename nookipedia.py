@@ -1,7 +1,8 @@
-from redbot.core import commands
 import discord
 import requests
 import json
+from redbot.core import commands
+from random import choice
 
 class Nookipedia(commands.Cog):
         """Grab information from Nookipedia"""
@@ -11,49 +12,90 @@ class Nookipedia(commands.Cog):
 
         @commands.command(pass_context=True)
         async def villager(self, ctx, villager, *args):
+                apikey = 'INSERT_API_HERE'
                 for arg in args:
                         villager = villager + " " + arg
-                if villager == "Renee" or villager == "renee":
+                if (villager.lower() == "renee"):
                         villager = 'Renée'
-                elif villager == "Etoile" or villager == "etoile":
+                elif (villager.lower() == "etoile"):
                         villager = 'Étoile'
-                apikey = 'INSERT_API_HERE'
-                apilink = requests.get('https://api.nookipedia.com/villagers?name=' + villager + '&nhdetails=true&api_key=' + apikey)
-                nookapi = apilink.json()
+                if villager.lower() == "random":
+                        apilink = requests.get('https://api.nookipedia.com/villagers?nhdetails=true&api_key=' + apikey)
+                        nookapi = choice(apilink.json())
+                        name = nookapi["name"]
+                        url = nookapi["url"]
+                        titlecolor = nookapi["title_color"]
+                        image = nookapi["image_url"]
+                        species = nookapi["species"]
+                        personality = nookapi["personality"]
+                        gender = nookapi["gender"]
+                        birthdaymonth = nookapi["birthday_month"]
+                        birthday = nookapi["birthday_day"]
+                        sign = nookapi["sign"]
+                        quote = nookapi["quote"]
+                        phrase = nookapi["phrase"]
+                        clothing = nookapi["clothing"]
+                        nhdetails = nookapi["nh_details"]
+                        if bool(nhdetails) == True:
+                            photo = nookapi["nh_details"]["photo_url"]
+                            variation = nookapi["nh_details"]["clothing_variation"]
+                else:
+                        apilink = requests.get('https://api.nookipedia.com/villagers?name=' + villager + '&nhdetails=true&api_key=' + apikey)
+                        nookapi = apilink.json()
+                        name = nookapi[0]["name"]
+                        url = nookapi[0]["url"]
+                        titlecolor = nookapi[0]["title_color"]
+                        image = nookapi[0]["image_url"]
+                        species = nookapi[0]["species"]
+                        personality = nookapi[0]["personality"]
+                        gender = nookapi[0]["gender"]
+                        birthdaymonth = nookapi[0]["birthday_month"]
+                        birthday = nookapi[0]["birthday_day"]
+                        sign = nookapi[0]["sign"]
+                        quote = nookapi[0]["quote"]
+                        phrase = nookapi[0]["phrase"]
+                        clothing = nookapi[0]["clothing"]
+                        nhdetails = nookapi[0]["nh_details"]
+                        if bool(nhdetails) == True:
+                            photo = nookapi[0]["nh_details"]["photo_url"]
+                            variation = nookapi[0]["nh_details"]["clothing_variation"]
+
                 if bool(nookapi) == False:
                         data = discord.Embed()
                         data.add_field(name="Error", value="Villager does not exist!", inline=False)
                 else:
-                        if bool(nookapi[0]['title_color']) == True:
-                                villagercol = int(nookapi[0]['title_color'], 16)
+                        if bool(titlecolor) == True:
+                                villagercol = int(titlecolor, 16)
                         else:
                                 villagercol = int('67ac42', 16)
-                        data = discord.Embed(title="Villager info", colour=villagercol, description=nookapi[0]["quote"])
-                        data.set_thumbnail(url=nookapi[0]["image_url"])
-                        if bool(nookapi[0]["nh_details"]) == True:
-                                data.set_author(name=nookapi[0]["name"], url=nookapi[0]["url"], icon_url=nookapi[0]["nh_details"]["photo_url"])
+                        data = discord.Embed(title="Villager info", colour=villagercol, description=quote)
+                        data.set_thumbnail(url=image)
+                        if bool(nhdetails) == True:
+                                data.set_author(name=name, url=url, icon_url=photo)
                         else:
-                                data.set_author(name=nookapi[0]["name"], url=nookapi[0]["url"])
-                        data.add_field(name="Species", value=nookapi[0]["species"], inline=True)
-                        data.add_field(name="Personality", value=nookapi[0]["personality"], inline=True)
-                        data.add_field(name="Gender", value=nookapi[0]["gender"], inline=True)
-                        if bool(nookapi[0]["birthday_month"]) == True:
-                                data.add_field(name="Birthday", value=nookapi[0]["birthday_month"] + ' ' + str(nookapi[0]["birthday_day"]), inline=True)
+                                data.set_author(name=name, url=url)
+                        data.add_field(name="Species", value=species, inline=True)
+                        data.add_field(name="Personality", value=personality, inline=True)
+                        data.add_field(name="Gender", value=gender, inline=True)
+                        if bool(birthdaymonth) == True:
+                                data.add_field(name="Birthday", value=birthdaymonth + ' ' + str(birthday), inline=True)
                         else:
                                 data.add_field(name="Birthday", value="Unknown", inline=True)
-                        data.add_field(name="Sign", value=nookapi[0]["sign"], inline=True)
-                        data.add_field(name="Catchphrase", value=nookapi[0]["phrase"], inline=True)
-                        if bool(nookapi[0]["nh_details"]) == True:
-                                if bool(nookapi[0]["nh_details"]["clothing_variation"]) == True:
-                                        data.add_field(name="Clothing", value="[" + nookapi[0]["clothing"] + "](https://nookipedia.com/wiki/Item:" + nookapi[0]["clothing"].replace(" ", "_") + "_(New_Horizons)) (" + nookapi[0]["nh_details"]["clothing_variation"] + ")", inline=True)
+                        data.add_field(name="Sign", value=sign, inline=True)
+                        data.add_field(name="Catchphrase", value=phrase, inline=True)
+                        if bool(nhdetails) == True:
+                                clothingtolink = clothing.replace(" ", "_")
+                                clothinglink = "https://nookipedia.com/wiki/Item:" + clothingtolink + "_%28New_Horizons%29"
+                                if bool(variation) == True:
+                                        data.add_field(name="Clothing", value="[" + clothing + "](" + clothinglink + ") (" + variation + ")", inline=True)
                                 else:
-                                        data.add_field(name="Clothing", value="[" + nookapi[0]["clothing"] + "](https://nookipedia.com/wiki/Item:" + nookapi[0]["clothing"].replace(" ", "_") + "_(New_Horizons))", inline=True)
+                                        data.add_field(name="Clothing", value="[" + clothing + "](" + clothinglink + ")", inline=True)
                         else:
-                                data.add_field(name="Clothing", value=nookapi[0]["clothing"], inline=True)
-                        data.add_field(name="More Info", value="[Learn more on Nookipedia](" + nookapi[0]["url"] + ")", inline=True)
+                                data.add_field(name="Clothing", value=clothing, inline=True)
+                        data.add_field(name="More Info", value="[Learn more on Nookipedia](" + url + ")", inline=True)
                         data.set_footer(text='Powered by Nookipedia', icon_url='https://nookipedia.com/favicon.ico')
                 await ctx.send(embed=data)
-				
+
         @commands.command(pass_context=True)
         async def fish(self, ctx, fish, *args):
                 for arg in args:
@@ -70,9 +112,10 @@ class Nookipedia(commands.Cog):
                 data.add_field(name="Times", value=nookapi["north"]["availability_array"][0]["time"], inline=True)
                 data.add_field(name="Sell", value=nookapi["sell_nook"], inline=True)
                 data.add_field(name="Sell (C.J.)", value=nookapi["sell_cj"], inline=True)
+                data.add_field(name="More Info", value="[Learn more on Nookipedia](" + nookapi["url"] + ")", inline=True)
                 data.set_footer(text='Powered by Nookipedia', icon_url='https://nookipedia.com/favicon.ico')
                 await ctx.send(embed=data)
-				
+
         @commands.command(pass_context=True)
         async def bug(self, ctx, bug, *args):
                 for arg in args:
@@ -89,9 +132,10 @@ class Nookipedia(commands.Cog):
                 data.add_field(name="Times", value=nookapi["north"]["availability_array"][0]["time"], inline=True)
                 data.add_field(name="Sell", value=nookapi["sell_nook"], inline=True)
                 data.add_field(name="Sell (Flick)", value=nookapi["sell_flick"], inline=True)
+                data.add_field(name="More Info", value="[Learn more on Nookipedia](" + nookapi["url"] + ")", inline=True)
                 data.set_footer(text='Powered by Nookipedia', icon_url='https://nookipedia.com/favicon.ico')
                 await ctx.send(embed=data)
-				
+
         @commands.command(pass_context=True)
         async def seacrit(self, ctx, seacrit, *args):
                 for arg in args:
@@ -107,9 +151,10 @@ class Nookipedia(commands.Cog):
                 data.add_field(name="Months (SH)", value=nookapi["south"]["months"], inline=True)
                 data.add_field(name="Times", value=nookapi["north"]["availability_array"][0]["time"], inline=True)
                 data.add_field(name="Sell", value=nookapi["sell_nook"], inline=True)
+                data.add_field(name="More Info", value="[Learn more on Nookipedia](" + nookapi["url"] + ")", inline=True)
                 data.set_footer(text='Powered by Nookipedia', icon_url='https://nookipedia.com/favicon.ico')
                 await ctx.send(embed=data)
-				
+
         @commands.command(pass_context=True)
         async def art(self, ctx, art, *args):
                 for arg in args:
@@ -129,5 +174,6 @@ class Nookipedia(commands.Cog):
                         data.add_field(name="Can be fake?", value="Yes", inline=True)
                 else:
                         data.add_field(name="Can be fake?", value="No", inline=True)
+                data.add_field(name="More Info", value="[Learn more on Nookipedia](" + nookapi["url"] + ")", inline=True)
                 data.set_footer(text='Powered by Nookipedia', icon_url='https://nookipedia.com/favicon.ico')
                 await ctx.send(embed=data)
