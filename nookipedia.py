@@ -11,10 +11,10 @@ class Nookipedia(commands.Cog):
                 self.bot = bot
 
         @commands.command(pass_context=True)
-        async def villager(self, ctx, villager, *args):
+        async def villager(self, ctx, *, villager: str):
+                """Provide the name of a villager to get their details.
+                """
                 apikey = 'INSERT_API_HERE'
-                for arg in args:
-                        villager = villager + " " + arg
                 if (villager.lower() == "renee"):
                         villager = 'Renée'
                 elif (villager.lower() == "etoile"):
@@ -119,9 +119,9 @@ class Nookipedia(commands.Cog):
                 await ctx.send(embed=data)
 
         @commands.command(pass_context=True)
-        async def fish(self, ctx, fish, *args):
-                for arg in args:
-                        fish = fish + " " + arg
+        async def fish(self, ctx, *, fish: str):
+                """Provide the name of a fish in New Horizons to get its details.
+                """
                 apikey = 'INSERT_API_HERE'
                 apilink = requests.get('https://api.nookipedia.com/nh/fish/' + fish + '?api_key=' + apikey)
                 nookapi = apilink.json()
@@ -139,9 +139,9 @@ class Nookipedia(commands.Cog):
                 await ctx.send(embed=data)
 
         @commands.command(pass_context=True)
-        async def bug(self, ctx, bug, *args):
-                for arg in args:
-                        bug = bug + " " + arg
+        async def bug(self, ctx, *, bug: str):
+                """Provide the name of a bug in New Horizons to get its details.
+                """
                 apikey = 'INSERT_API_HERE'
                 apilink = requests.get('https://api.nookipedia.com/nh/bugs/' + bug + '?api_key=' + apikey)
                 nookapi = apilink.json()
@@ -159,9 +159,9 @@ class Nookipedia(commands.Cog):
                 await ctx.send(embed=data)
 
         @commands.command(pass_context=True)
-        async def seacrit(self, ctx, seacrit, *args):
-                for arg in args:
-                        seacrit = seacrit + " " + arg
+        async def seacrit(self, ctx, *, seacrit: str):
+                """Provide the name of a sea creature in New Horizons to get its details.
+                """
                 apikey = 'INSERT_API_HERE'
                 apilink = requests.get('https://api.nookipedia.com/nh/sea/' + seacrit + '?api_key=' + apikey)
                 nookapi = apilink.json()
@@ -178,9 +178,9 @@ class Nookipedia(commands.Cog):
                 await ctx.send(embed=data)
 
         @commands.command(pass_context=True)
-        async def art(self, ctx, art, *args):
-                for arg in args:
-                        art = art + " " + arg
+        async def art(self, ctx, *, art: str):
+                """Provide the name of an artwork in New Horizons to get its details.
+                """
                 apikey = 'INSERT_API_HERE'
                 apilink = requests.get('https://api.nookipedia.com/nh/art/' + art + '?api_key=' + apikey)
                 nookapi = apilink.json()
@@ -201,9 +201,9 @@ class Nookipedia(commands.Cog):
                 await ctx.send(embed=data)
 
         @commands.command(pass_context=True)
-        async def recipe(self, ctx, recipe, *args):
-                for arg in args:
-                        recipe = recipe + " " + arg
+        async def recipe(self, ctx, *, recipe: str):
+                """Provide the name of a recipe of the item in New Horizons to get its details.
+                """
                 apikey = 'INSERT_API_HERE'
                 apilink = requests.get('https://api.nookipedia.com/nh/recipes/' + recipe + '?api_key=' + apikey)
                 nookapi = apilink.json()
@@ -214,22 +214,22 @@ class Nookipedia(commands.Cog):
 
                 availall = ""
                 for availability in range (len(nookapi["availability"])):
-                	if nookapi["availability"][availability]["note"]:
-                		avail = nookapi["availability"][availability]["from"] + " (" + nookapi["availability"][availability]["note"] + ")"
-                	else:
-                		avail = nookapi["availability"][availability]["from"]
-                	if availability < int(len(nookapi["materials"])) - 1:
-                		availall += avail + '\n'
-                	else:
-                		availall += avail
+                    if nookapi["availability"][availability]["note"]:
+                        avail = nookapi["availability"][availability]["from"] + " (" + nookapi["availability"][availability]["note"] + ")"
+                    else:
+                        avail = nookapi["availability"][availability]["from"]
+                    if availability < int(len(nookapi["materials"])) - 1:
+                        availall += avail + '\n'
+                    else:
+                        availall += avail
 
                 matall = ""
                 for material in range (len(nookapi["materials"])):
-                	mat = str(nookapi["materials"][material]["count"]) + "× " + nookapi["materials"][material]["name"]
-                	if material < int(len(nookapi["materials"])) - 1:
-                		matall += mat + '\n'
-                	else:
-                		matall += mat
+                    mat = str(nookapi["materials"][material]["count"]) + "× " + nookapi["materials"][material]["name"]
+                    if material < int(len(nookapi["materials"])) - 1:
+                        matall += mat + '\n'
+                    else:
+                        matall += mat
 
                 data.add_field(name="Obtained via", value=availall, inline=False)
                 data.add_field(name="Recipes to unlock", value=nookapi["recipes_to_unlock"], inline=True)
