@@ -199,3 +199,41 @@ class Nookipedia(commands.Cog):
                 data.add_field(name="More Info", value="[Learn more on Nookipedia](" + nookapi["url"] + ")", inline=True)
                 data.set_footer(text='Powered by Nookipedia', icon_url='https://nookipedia.com/favicon.ico')
                 await ctx.send(embed=data)
+
+        @commands.command(pass_context=True)
+        async def recipe(self, ctx, recipe, *args):
+                for arg in args:
+                        recipe = recipe + " " + arg
+                apikey = 'INSERT_API_HERE'
+                apilink = requests.get('https://api.nookipedia.com/nh/recipes/' + recipe + '?api_key=' + apikey)
+                nookapi = apilink.json()
+                coloring = int('ffc966', 16)
+                data = discord.Embed(title="Recipe info", colour=coloring)
+                data.set_thumbnail(url=nookapi["image_url"])
+                data.set_author(name=nookapi["name"], url=nookapi["url"])
+
+                availall = ""
+                for availability in range (len(nookapi["availability"])):
+                	if nookapi["availability"][availability]["note"]:
+                		avail = nookapi["availability"][availability]["from"] + " (" + nookapi["availability"][availability]["note"] + ")"
+                	else:
+                		avail = nookapi["availability"][availability]["from"]
+                	if availability < int(len(nookapi["materials"])) - 1:
+                		availall += avail + '\n'
+                	else:
+                		availall += avail
+
+                matall = ""
+                for material in range (len(nookapi["materials"])):
+                	mat = str(nookapi["materials"][material]["count"]) + "× " + nookapi["materials"][material]["name"]
+                	if material < int(len(nookapi["materials"])) - 1:
+                		matall += mat + '\n'
+                	else:
+                		matall += mat
+
+                data.add_field(name="Obtained via", value=availall, inline=False)
+                data.add_field(name="Recipes to unlock", value=nookapi["recipes_to_unlock"], inline=True)
+                data.add_field(name="Materials", value=matall, inline=True)
+                data.add_field(name="More Info", value="[Learn more on Nookipedia](" + nookapi["url"] + ")", inline=True)
+                data.set_footer(text='Powered by Nookipedia', icon_url='https://nookipedia.com/favicon.ico')
+                await ctx.send(embed=data)
